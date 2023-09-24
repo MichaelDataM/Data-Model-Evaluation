@@ -1,0 +1,47 @@
+import numpy as np
+from sklearn.metrics import roc_curve,precision_recall_curve,auc
+from scipy import interp
+
+
+mean_tpr = 0.0
+mean_fpr = np.linspace(0,1,100)
+all_tpr = []
+precision,recall,average_precision = [],[],[]
+
+for i,(train,test) in enumerate(cv.split(X,y)):
+    clf = classifier.fit(X[train],y[train]).predict_proba(X[test])
+    fpr,tpr,thresholds = roc_curve(y[test],clf[:,1])
+    #mean_tpr += interp(mean_fpr,fpr,tpr)
+    #mean_tpr[0] = 0.0
+    roc_auc = auc(fpr,tpr)
+    mean_tpr += interp(mean_fpr,fpr,tpr)
+
+    mean_tpr[0] = 0
+    
+    plt.plot(fpr,tpr,lw = 1,label = 'ROC fold %{} (area = {:.2f})'.format(i,roc_auc))
+    
+    precision_score, recall_score, _ = precision_recall_curve(y[test], clf[:, 1])
+    
+    precision.append(precision_score)
+    
+    recall.append(recall_score)
+    
+    average_precision.append( average_precision_score(y[test], clf[:, 1]) )
+    
+plt.plot([0, 1], [0, 1], '--', color=(0.6, 0.6, 0.6), label='Luck')
+    
+
+mean_tpr /= 5
+mean_tpr[-1] = 1.0
+mean_auc = auc(mean_fpr, mean_tpr)
+plt.plot(mean_fpr, mean_tpr, 'k--',
+         label='Mean ROC (area = %0.2f)' % mean_auc, lw=2)
+
+
+plt.xlim([-0.05, 1.05])
+plt.ylim([-0.05, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic example')
+plt.legend(loc="lower right")
+plt.show()
