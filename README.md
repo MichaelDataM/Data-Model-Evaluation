@@ -5,6 +5,6 @@ This foldef includs coding about model evaluation, hyparameter tuning.
 
 1. ROC\AUC and visualization
 2. learning curve and visualization
-3. precision-recall curve and visualization
-4. cross-validation
-5. grid-search
+3. Precision-recall curve and visualization
+4. Cross-validation
+5. Grid-search
